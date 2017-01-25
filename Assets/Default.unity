@@ -2888,7 +2888,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0cd9f9c3f934a4bf6831a0c574656915, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2998,7 +2998,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0912c908e23b54ce59ff8ea24eaf1efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 1624452963255630, guid: 1ab9e336d12e2467ab271342eb67b718,
+  enemyPrefab: {fileID: 1423656768229670, guid: 99cebcf6358224923ba25ad0d12c81a9,
     type: 2}
 --- !u!4 &1840285628
 Transform:
