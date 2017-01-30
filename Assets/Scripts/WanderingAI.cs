@@ -12,17 +12,37 @@ public class WanderingAI : MonoBehaviour {
 	[SerializeField] private GameObject fireballPrefab;
 	private GameObject _fireball;
 
+	public GameObject remainingObject;
+	private TextUpdater remainingTextUpdate;
+	public int bluePolesLeft;
+
+	public AudioSource _audio;
+	public AudioClip walkingSound;
+	public AudioClip dyingSound;
+	public AudioClip eatingSound;
+
 	void Start () {
 		_alive = true;
+
+		remainingTextUpdate = remainingObject.GetComponent<TextUpdater> ();
+		bluePolesLeft = GameObject.FindGameObjectsWithTag ("blueTag").Length;
+		_audio = gameObject.GetComponent<AudioSource> ();
 	}
 
 	void Update () {
+
+		remainingTextUpdate.UpdateText (bluePolesLeft.ToString ());
+
 		if (_alive) {
 			transform.Translate (0, 0, speed * Time.deltaTime);
 
 			lookAhead ();
 			lookAskew (askewAngle);
 			lookAskew (-askewAngle);
+		}
+
+		if (_audio.isPlaying == false) {
+			_audio.PlayOneShot (walkingSound);
 		}
 	}
 
@@ -63,8 +83,9 @@ public class WanderingAI : MonoBehaviour {
 
 					//Collided with a blue destoryable object
 					if (hit.distance < 2.0f) {
-						hit.transform.gameObject.GetComponent<DestroyablePillar> ().ReactToHit ();
+						hit.transform.gameObject.GetComponent<DestroyablePillar> ().ReactToHit (this);
 						gameObject.GetComponent<AnimationState> ().UpdateAnimation (AnimationState.CurrentAnimation.stopEating);
+						_audio.PlayOneShot (eatingSound);
 					}
 				}
 			} else {

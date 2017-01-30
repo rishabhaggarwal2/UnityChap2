@@ -8,6 +8,9 @@ public class ReactiveTarget : MonoBehaviour {
 		if (behavior != null) {
 			behavior.SetAlive (false);
 		}
+
+		behavior._audio.PlayOneShot (behavior.dyingSound);
+
 		StartCoroutine (Die ());
 	}
 
