@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WanderingAI : MonoBehaviour {
 	public float speed = 3.0f;
@@ -21,7 +22,14 @@ public class WanderingAI : MonoBehaviour {
 	public AudioClip dyingSound;
 	public AudioClip eatingSound;
 
+	private string state;
+
+	public GameObject _StateMachineText;
+	public GameObject _MainPanel;
+
 	void Start () {
+		SetState ("wandering");
+
 		_alive = true;
 
 		remainingTextUpdate = remainingObject.GetComponent<TextUpdater> ();
@@ -33,9 +41,8 @@ public class WanderingAI : MonoBehaviour {
 
 		remainingTextUpdate.UpdateText (bluePolesLeft.ToString ());
 
-		if (_alive) {
+		if (_alive && state != "alarmed") {
 			transform.Translate (0, 0, speed * Time.deltaTime);
-
 			lookAhead ();
 			lookAskew (askewAngle);
 			lookAskew (-askewAngle);
@@ -61,6 +68,10 @@ public class WanderingAI : MonoBehaviour {
 		if (Physics.SphereCast (ray, 0.75f, out hit)) {
 			GameObject hitObject = hit.transform.gameObject;
 			if (hitObject.GetComponent<PlayerCharacter> ()) {
+
+				if (state != "alarmed") {
+					SetState ("alarmed");
+				}
 				if (_fireball == null) {
 					_fireball = Instantiate (fireballPrefab) as GameObject;
 					_fireball.transform.position = transform.TransformPoint (Vector3.forward * 1.5f);
@@ -86,6 +97,10 @@ public class WanderingAI : MonoBehaviour {
 						hit.transform.gameObject.GetComponent<DestroyablePillar> ().ReactToHit (this);
 						gameObject.GetComponent<AnimationState> ().UpdateAnimation (AnimationState.CurrentAnimation.stopEating);
 						_audio.PlayOneShot (eatingSound);
+
+						if (state != "wandering") {
+							SetState ("wandering");
+						}
 					}
 				}
 			} else {
@@ -111,6 +126,10 @@ public class WanderingAI : MonoBehaviour {
 				tmpTargetPosition.y = transform.position.y;
 
 				transform.LookAt (tmpTargetPosition);
+
+				if (state != "locked") {
+					SetState ("locked");
+				}
 //				transform.Rotate (0, angle, 0);
 			}
 		}
@@ -118,5 +137,42 @@ public class WanderingAI : MonoBehaviour {
 
 	public void SetAlive(bool alive) {
 		_alive = alive;
+	}
+
+	private void SetState(string _state) {
+		state = _state;
+
+		switch (state) {
+		
+		case "wandering":
+			_StateMachineText.GetComponent<Text> ().text = state;
+			Debug.Log ("case: " + state);
+			_MainPanel.GetComponent<Image>().color = Color.white;
+			break;
+		
+		case "alarmed":
+			_StateMachineText.GetComponent<Text> ().text = state;
+			Debug.Log ("case: " + state);
+			_MainPanel.GetComponent<Image> ().color = Color.magenta;
+
+			StartCoroutine (Stunned(3.0f));
+
+			break;
+
+		case "locked":
+			_StateMachineText.GetComponent<Text> ().text = state;
+			Debug.Log ("case: " + state);
+			_MainPanel.GetComponent<Image>().color = Color.white;
+			break;
+			
+		default:
+			break;
+		}
+	}
+
+	private IEnumerator Stunned(float _duration) {
+		yield return new WaitForSeconds (_duration);
+
+		SetState ("wandering");
 	}
 }

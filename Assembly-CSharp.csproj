@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\AnimationState.cs" />
+     <Compile Include="Assets\Scripts\BillboardMe.cs" />
      <Compile Include="Assets\Scripts\DestroyablePillar.cs" />
      <Compile Include="Assets\Scripts\FPSInput.cs" />
      <Compile Include="Assets\Scripts\Fireball.cs" />
